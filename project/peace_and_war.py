@@ -13,8 +13,8 @@ both_defect_utility = 2
 looser_utility = -4
 winner_utility = 4
 
-a_start_capital = 10
-b_start_capital = 10
+a_start_capital = 100
+b_start_capital = 100
 
 a_resources = [a_start_capital]
 b_resources = [b_start_capital]
@@ -25,18 +25,11 @@ b_actions = [1]
 a_utility = [a_start_capital]
 b_utility = [b_start_capital]
 
-rounds = 10000
+rounds = 500
 
 resolution = 100 # resolution of the map
-animate = True # if animate is True, show animations
+animate = False # if animate is True, show animations
 
-
-
-
-# animation of utility
-fig = plt.figure(1)
-data = np.zeros((resolution, resolution))
-im = plt.imshow(data, vmin=0, vmax=1)
 
 def init_map():
     im.set_data(np.zeros((resolution, resolution)))
@@ -48,18 +41,6 @@ def update_map(i):
     im.set_data(the_map)
     return im
 
-
-# animation of utility
-fig2 = plt.figure(2)
-ax2 = fig2.add_subplot(111)
-
-li_a, = ax2.plot(np.linspace(1,len(a_utility), len(a_utility)), a_utility, label='Tit for tat', color='orange')
-li_b, = ax2.plot(np.linspace(1,len(b_utility), len(b_utility)), b_utility, label='Random', color='blue')
-ax2.set_title('Iteraded prisoners')
-ax2.set_xlabel('Iterations')
-ax2.set_ylabel('Utility')
-handles, labels = ax2.get_legend_handles_labels()
-ax2.legend(handles, labels)
 
 
 def init_utility_plot():
@@ -73,6 +54,24 @@ def update_utility_plot(i):
 
 
 if (animate):
+    # animation of utility
+    fig = plt.figure(1)
+    data = np.zeros((resolution, resolution))
+    im = plt.imshow(data, vmin=0, vmax=1)
+
+
+
+    # animation of utility
+    fig2 = plt.figure(2)
+    ax2 = fig2.add_subplot(111)
+
+    li_a, = ax2.plot(np.linspace(1, len(a_utility), len(a_utility)), a_utility, label='Tit for tat', color='orange')
+    li_b, = ax2.plot(np.linspace(1, len(b_utility), len(b_utility)), b_utility, label='Random', color='blue')
+    ax2.set_title('Iteraded prisoners')
+    ax2.set_xlabel('Iterations')
+    ax2.set_ylabel('Average Utility')
+    handles, labels = ax2.get_legend_handles_labels()
+    ax2.legend(handles, labels)
     try:
         anim = animation.FuncAnimation(fig, update_map, init_func=init_map, frames=resolution * resolution,
                                        interval=200)
@@ -107,7 +106,6 @@ def tit_for_tat(me, opponent, t):
         return(1)
     return(opponent[t-1])
 
-
 # play the game the defined amount of rounds
 for t in range(1, rounds):
     if(a_resources[-1] <= 0 or b_resources[-1] <= 0):
@@ -115,7 +113,7 @@ for t in range(1, rounds):
         break
 
 
-    a_strategy = tit_for_tat(a_actions, b_actions, t)
+    a_strategy = 0 # always defect
     b_strategy = round(np.random.rand()) # random strategy
     a_actions.append(a_strategy) # store strategy
     b_actions.append(b_strategy) # store strategy
@@ -132,29 +130,27 @@ for t in range(1, rounds):
 
 
     [a_result, b_result] = evaluate_strategy(a_strategy, b_strategy) # evaluate the strategies and get the game result
-    a_utility.append(a_result/t) # store the average result over time
-    b_utility.append(b_result/t)
+    a_utility.append((a_tmp + a_result) / t) # store the average result over time
+    b_utility.append((b_tmp + b_result) / t)
     
-    a_resources.append(a_tmp + a_result) # get the accumulated resources
+    a_resources.append(a_tmp + a_result) # get the average accumulated resources
     b_resources.append(b_tmp + b_result)
 
-    if(t%100 == 0):
-        plt.pause(0.5)
+    # if(t%100 == 0):
+    #     plt.pause(0.5)
 
 
 
-#
-# ax = plt.subplot(1,1,1)
-# ax.plot(np.linspace(1,len(a_utility), len(a_utility)), a_utility, label='Tit for tat')
-# ax.plot(np.linspace(1,len(b_utility), len(b_utility)), b_utility, label='Random')
-# ax.set_title('Iteraded prisoners')
-# ax.set_xlabel('Iterations')
-# ax.set_ylabel('Utility')
-# handles, labels = ax.get_legend_handles_labels()
-# ax.legend(handles, labels)
-# plt.show()
+plt.suptitle('Iterated Prisoners')
+ax = plt.subplot(1,2,1)
+ax.plot(np.linspace(1,len(a_utility), len(a_utility)), a_utility, label='Always Defect')
+ax.plot(np.linspace(1,len(b_utility), len(b_utility)), b_utility, label='Random')
+ax.set_xlabel('Iterations')
+ax.set_ylabel('Average Utility')
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
 
-# ax = plt.subplot(1,1,1)
+# ax = plt.subplot(1,3,2)
 # ax.plot(np.linspace(1,len(a_actions), len(a_actions)), a_actions, label='Tit for tat')
 # ax.plot(np.linspace(1,len(b_actions), len(b_actions)), b_actions, label='Random')
 # ax.set_title('Iteraded prisoners')
@@ -162,16 +158,14 @@ for t in range(1, rounds):
 # ax.set_ylabel('Action')
 # handles, labels = ax.get_legend_handles_labels()
 # ax.legend(handles, labels)
-# plt.show()
-#
-#
-# ax = plt.subplot(1,1,1)
-# ax.plot(np.linspace(1,len(a_resources), len(a_resources)), a_resources, label='Tit for tat')
-# ax.plot(np.linspace(1,len(b_resources), len(b_resources)), b_resources, label='Random')
-# ax.set_title('Iteraded prisoners')
-# ax.set_xlabel('Iterations')
-# ax.set_ylabel('Accumulated utility')
-# handles, labels = ax.get_legend_handles_labels()
-# ax.legend(handles, labels)
-# plt.show()
+
+
+ax = plt.subplot(1,2,2)
+ax.plot(np.linspace(1,len(a_resources), len(a_resources)), a_resources, label='Always Defect')
+ax.plot(np.linspace(1,len(b_resources), len(b_resources)), b_resources, label='Random')
+ax.set_xlabel('Iterations')
+ax.set_ylabel('Accumulated utility')
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels)
+plt.show()
 
