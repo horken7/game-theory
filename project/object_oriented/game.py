@@ -1,5 +1,7 @@
 import numpy as np
-from .player import Player
+import  matplotlib.pyplot as plt
+from player import Player
+
 
 class Game:
     def __init__(self, rounds=100):
@@ -13,10 +15,11 @@ class Game:
         self.PW_looser_utility = -2
 
         self.rounds = rounds
-    def evaluate_strategy(self, a, b):
+
+    def evaluate_strategy(self, p1, p2):
         """
         Stochastic evaluation of strategies a and b, where both strategies
-        have equal probability (50%) of winning. Where
+        have equal probability (50%) of winning. Where:
         0: defect
         1: coorporate
 
@@ -26,22 +29,22 @@ class Game:
         """
         prob = 0.5
 
-        if (a == 1 and b == 1):  # both coorporate
+        if (p1 == 1 and p2 == 1):  # both coorporate
             return (self.both_coorporate_utility, self.both_coorporate_utility)
 
-        elif (a == 1 and b == 0):  # a coorporate, b defect
+        elif (p1 == 1 and p2 == 0):  # p1 coorporate, p2 defect
             if (np.random.rand() < prob):
                 return (self.WP_winner_utility, self.WP_looser_utility)
             else:
                 return (self.PW_looser_utility, self.PW_winner_utility)
 
-        elif (a == 0 and b == 1):  # a defect, be coorporate
+        elif (p1 == 0 and p2 == 1):  # p1 defect, p2 coorporate
             if (np.random.rand() < prob):
                 return (self.PW_winner_utility, self.PW_looser_utility)
             else:
                 return (self.WP_looser_utility, self.WP_winner_utility)
 
-        elif (a == 0 and b == 0):  # both defect
+        elif (p1 == 0 and p2 == 0):  # both defect
             if (np.random.rand() < prob):
                 return (self.WW_winner_utility, self.WW_looser_utility)
             else:
@@ -49,17 +52,57 @@ class Game:
 
 
     def simulate_2_players(self, p1, p2):
-        for i in range(1,self.rounds):
+        for t in range(1,self.rounds):
             if(p1.alive() and p2.alive()):
-                strategy1 = p1.get_strategy()
-                strategy2 = p2.get_strategy()
+                strategy1 = p1.get_strategy(p1.actions, p2.actions, t)
+                strategy2 = p2.get_strategy(p2.actions, p1.actions, t)
+                [utility1, utility2] = self.evaluate_strategy(strategy1, strategy2)
+                p1.update_history(utility1, strategy1, t)
+                p2.update_history(utility2, strategy2, t)
+
+    def plot_average_and_accumulated(self, p1, p2):
+        plt.suptitle('Iterated Prisoners')
+        ax = plt.subplot(1, 2, 1)
+        ax.plot(np.linspace(1, len(p1.average_utility), len(p1.average_utility)), p1.average_utility,
+                label=p1.strategy_name)
+        ax.plot(np.linspace(1, len(p2.average_utility), len(p2.average_utility)), p2.average_utility,
+                label=p2.strategy_name)
+        ax.set_xlabel('Iterations')
+        ax.set_ylabel('Average Utility')
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels)
+
+        ax = plt.subplot(1, 2, 2)
+        ax.plot(np.linspace(1, len(p1.accumulated_resources), len(p1.accumulated_resources)), p1.accumulated_resources,
+                label=p1.strategy_name)
+        ax.plot(np.linspace(1, len(p2.accumulated_resources), len(p2.accumulated_resources)), p2.accumulated_resources,
+                label=p2.strategy_name)
+        ax.set_xlabel('Iterations')
+        ax.set_ylabel('Accumulated utility')
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels)
+        plt.show()
 
 
 
 if __name__ == '__main__':
-    rounds = 5000
+    # """
+    # The argument of the 'Player' object is its strategy, according to:
+    #
+    # 0: always defect
+    # 1: always coorporate
+    # 2: random
+    # 3: tit for tat
+    # 4: tit for two tats
+    #
+    # """
+
+    rounds = 15000
 
     game = Game(rounds)
 
-    p1 = Player(0)
+    p1 = Player(3)
     p2 = Player(2)
+
+    game.simulate_2_players(p1, p2)
+    game.plot_average_and_accumulated(p1, p2)
