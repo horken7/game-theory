@@ -1,18 +1,17 @@
 import numpy as np
 import  matplotlib.pyplot as plt
-from player import Player
 
 
 class Game:
-    def __init__(self, rounds=100):
+    def __init__(self, rounds, bc, www, wwl, wpw, wpl, pww, pwl):
         # Payoff schemes:
-        self.both_coorporate_utility = 2
-        self.WW_winner_utility = 4
-        self.WW_looser_utility = -1
-        self.WP_winner_utility = 2
-        self.WP_looser_utility = -1
-        self.PW_winner_utility = 4
-        self.PW_looser_utility = -2
+        self.both_coorporate_utility = bc
+        self.WW_winner_utility = www
+        self.WW_looser_utility = -wwl
+        self.WP_winner_utility = wpw
+        self.WP_looser_utility = wpl
+        self.PW_winner_utility = pww
+        self.PW_looser_utility = pwl
 
         self.rounds = rounds
 
@@ -118,27 +117,3 @@ class Game:
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels)
         plt.show()
-
-
-
-if __name__ == '__main__':
-    # """
-    # The argument of the 'Player' object is its strategy, according to:
-    #
-    # 0: always defect
-    # 1: always coorporate
-    # 2: random
-    # 3: tit for tat
-    # 4: tit for two tats
-    #
-    # """
-
-    rounds = 15000
-
-    game = Game(rounds)
-
-    p1 = Player(3)
-    p2 = Player(2)
-
-    game.simulate_2_players(p1, p2)
-    game.plot_average_and_accumulated(p1, p2)
