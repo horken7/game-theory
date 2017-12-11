@@ -70,9 +70,9 @@ class Player:
 
 
     def tit_f2_tat(self, me, opponent, t):
-        if (t <= 1):
+        if (t <= 2):
             return (1)  # cooperate round 0 and 1
-        if (opponent[t - 2] == 0 & opponent[t - 1] == 0):
+        if (opponent[-2] == 0 and opponent[-1] == 0):
             return (0)  # defect if last two opponent moves were defect
         return (1)  # otherwise cooperate
 

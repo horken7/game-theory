@@ -90,8 +90,8 @@ class Game:
             if(p1.alive() and p2.alive()):
                 strategy1 = p1.get_strategy(p1.actions, p2.actions, t)
                 strategy2 = p2.get_strategy(p2.actions, p1.actions, t)
-                # [utility1, utility2] = self.evaluate_strategy(strategy1, strategy2)
-                [utility1, utility2] = self.evaluate_relative_stochastic_strategy(strategy1, strategy2, p1, p2)
+                [utility1, utility2] = self.evaluate_strategy(strategy1, strategy2)
+                # [utility1, utility2] = self.evaluate_relative_stochastic_strategy(strategy1, strategy2, p1, p2)
                 p1.update_history(utility1, strategy1, t)
                 p2.update_history(utility2, strategy2, t)
 

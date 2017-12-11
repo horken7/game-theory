@@ -1,15 +1,7 @@
-from game import Game
-from player import Player
+from evolution import Evolution
 
 if __name__ == '__main__':
     # """
-    # The argument of the 'Player' object is its strategy, according to:
-    #
-    # 0: always defect
-    # 1: always coorporate
-    # 2: random
-    # 3: tit for tat
-    # 4: tit for two tats
     #
     # The values defined below are used to initialise the payoff values throughout the game, where:
     #
@@ -35,13 +27,12 @@ if __name__ == '__main__':
     PW_winner_utility = 2
     PW_looser_utility = -5
 
-    rounds = 15000
+    number_of_players = 5
+    rounds = 100
 
-    game = Game(rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
+    evolution = Evolution(number_of_players, rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
                 WP_looser_utility, PW_winner_utility, PW_looser_utility)
 
-    p1 = Player(2)
-    p2 = Player(4)
-
-    game.simulate_2_players(p1, p2)
-    game.plot_average_and_accumulated(p1, p2)
+    evolution.init_players_randomly()
+    evolution.simulate_evolution()
+    evolution.plot_average_and_accumulated()
