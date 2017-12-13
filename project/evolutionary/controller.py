@@ -33,6 +33,6 @@ if __name__ == '__main__':
     evolution = Evolution(number_of_players, rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
                 WP_looser_utility, PW_winner_utility, PW_looser_utility)
 
-    evolution.init_players_randomly()
+    evolution.init_all_players()
     evolution.simulate_evolution()
-    evolution.plot_average_and_accumulated()
+    evolution.plot_stuff()

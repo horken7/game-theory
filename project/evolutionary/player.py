@@ -10,15 +10,12 @@ class Player:
 
         """
 
-        self.round_score = 0
-
-        self.accumulated_utility = np.zeros(rounds)
+        self.utility = np.zeros(rounds)
 
         self.strategy = strategy
 
-
     def update_score(self, t, score):
-        self.accumulated_utility[t] += score
+        self.utility[t] += score
 
     def get_strategy(self):
         return self.strategy

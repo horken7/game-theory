@@ -34,15 +34,15 @@ class Game:
 
         elif (p1 == 1 and p2 == 0):  # p1 coorporate, p2 defect
             if (np.random.rand() < prob):
-                return (self.WP_winner_utility, self.WP_looser_utility, 2)
+                return (self.PW_winner_utility, self.PW_looser_utility, 2)
             else:
-                return (self.PW_looser_utility, self.PW_winner_utility, 3)
+                return (self.WP_looser_utility, self.WP_winner_utility, 3)
 
         elif (p1 == 0 and p2 == 1):  # p1 defect, p2 coorporate
             if (np.random.rand() < prob):
-                return (self.PW_winner_utility, self.PW_looser_utility, 4)
+                return (self.WP_winner_utility, self.WP_looser_utility, 4)
             else:
-                return (self.WP_looser_utility, self.WP_winner_utility, 5)
+                return (self.PW_looser_utility, self.PW_winner_utility, 5)
 
         elif (p1 == 0 and p2 == 0):  # both defect
             if (np.random.rand() < prob):
@@ -74,7 +74,7 @@ class Game:
         # second round
         p1_second_strategy = p1_strategy[state]
         p2_second_strategy = p2_strategy[state]
-        [p1_reward, p2_reward, state] = self.evaluate_strategy(p1_first_strategy, p2_first_strategy, p1_utility, p2_utility)
+        [p1_reward, p2_reward, state] = self.evaluate_strategy(p1_second_strategy, p2_second_strategy, p1_utility, p2_utility)
         p1_utility += p1_reward
         p2_utility += p2_reward
 
