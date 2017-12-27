@@ -28,9 +28,9 @@ if __name__ == '__main__':
     PW_looser_utility = -5
 
     number_of_players = 5
-    rounds = 100
+    rounds = 50
 
-    evolution = Evolution(number_of_players, rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
+    evolution = Evolution(rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
                 WP_looser_utility, PW_winner_utility, PW_looser_utility)
 
     evolution.init_all_players()

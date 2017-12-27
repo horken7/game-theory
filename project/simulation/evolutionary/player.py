@@ -11,11 +11,15 @@ class Player:
         """
 
         self.utility = np.zeros(rounds)
+        self.abundance = np.zeros(rounds)
 
         self.strategy = strategy
 
     def update_score(self, t, score):
         self.utility[t] += score
+
+    def update_abundance(self, t, abundance):
+        self.abundance[t] = abundance
 
     def get_strategy(self):
         return self.strategy
