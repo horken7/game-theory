@@ -19,16 +19,23 @@ if __name__ == '__main__':
     # """
 
     # payoff
-    both_coorporate_utility = 2
-    WW_winner_utility = 9
-    WW_looser_utility = -3
-    WP_winner_utility = 15
-    WP_looser_utility = -2
-    PW_winner_utility = 2
-    PW_looser_utility = -5
+    # both_coorporate_utility = 2
+    # WW_winner_utility = 9
+    # WW_looser_utility = -3
+    # WP_winner_utility = 15
+    # WP_looser_utility = -2
+    # PW_winner_utility = 2
+    # PW_looser_utility = -5
 
-    number_of_players = 5
-    rounds = 5000
+    both_coorporate_utility = 2
+    WW_winner_utility = 8
+    WW_looser_utility = -6
+    WP_winner_utility = 12
+    WP_looser_utility = -5
+    PW_winner_utility = 0
+    PW_looser_utility = 0
+
+    rounds = 10000
 
     replicator_dynamics = ReplicatorDynamics(rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
                 WP_looser_utility, PW_winner_utility, PW_looser_utility)

@@ -25,7 +25,7 @@ class ReplicatorDynamics:
             for ind2, p2_strategy in enumerate(self.strategies):
                 score_p1 = []
                 score_p2 = []
-                for i in range(500):
+                for i in range(500): # average score over 500 played games
                     [p1_utility, p2_utility] = self.game.simulate_game(p1_strategy, p2_strategy)
                     score_p1.append(p1_utility)
                     score_p2.append(p2_utility)
@@ -52,7 +52,8 @@ class ReplicatorDynamics:
         for t in range(1, self.rounds):
             expected_payoff = self.game_matrix * self.abundance[:,t-1]
             mean_fitness = np.mean(self.game_matrix * self.abundance[:,t-1])
-            next_abundance = np.multiply(self.abundance[:,t-1], (expected_payoff - mean_fitness))
+            alpha = 0.2
+            next_abundance = np.multiply(self.abundance[:,t-1], alpha * (expected_payoff - mean_fitness))
             self.abundance[:,t] = self.abundance[:,t-1] + next_abundance
 
             # remove individuals lower than threshold
@@ -60,18 +61,19 @@ class ReplicatorDynamics:
                 threshold = 1 #/ self.population_size
                 if(a < threshold):
                     self.abundance[ind, t] = 0
-            sum_abundance = np.sum(self.abundance[:,t])
 
             # normalise to original population size
+            sum_abundance = np.sum(self.abundance[:, t])
             for ind, a in enumerate(self.abundance[:,t]):
                 self.abundance[ind, t] = (a / sum_abundance) * self.population_size
 
-            if(t%100 == 0):
+            if(t%1000 == 0):
                 print(t)
 
         self.plot_stuff()
 
     def plot_stuff(self):
+
 
         plt.title('Two Round Prisoners Evolution')
         ax = plt.subplot(1, 1, 1)
@@ -79,14 +81,11 @@ class ReplicatorDynamics:
         ax.set_ylabel('Abundance')
         for ind, a in enumerate(self.abundance):
             ax.plot(np.linspace(1, len(np.asarray(a)[0]), len(np.asarray(a)[0])), np.asarray(a)[0], label="{0:b}".format(ind))
+            if(np.asarray(a)[0][-1] > 0):
+                print('Strategy: %s - abundance: %i' % ("{0:b}".format(ind), np.asarray(a)[0][-1]))
         # handles, labels = ax.get_legend_handles_labels()
         # ax.legend(handles, labels)
 
         plt.show()
-
-
-
-
-
 
 
