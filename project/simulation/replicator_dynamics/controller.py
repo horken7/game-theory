@@ -35,7 +35,7 @@ if __name__ == '__main__':
     PW_winner_utility = 0
     PW_looser_utility = 0
 
-    rounds = 10000
+    rounds = 20000
 
     replicator_dynamics = ReplicatorDynamics(rounds, both_coorporate_utility, WW_winner_utility, WW_looser_utility, WP_winner_utility,
                 WP_looser_utility, PW_winner_utility, PW_looser_utility)

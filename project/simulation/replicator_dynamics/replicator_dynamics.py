@@ -52,13 +52,18 @@ class ReplicatorDynamics:
         for t in range(1, self.rounds):
             expected_payoff = self.game_matrix * self.abundance[:,t-1]
             mean_fitness = np.mean(self.game_matrix * self.abundance[:,t-1])
-            alpha = 0.2
+            alpha = 0.02
             next_abundance = np.multiply(self.abundance[:,t-1], alpha * (expected_payoff - mean_fitness))
             self.abundance[:,t] = self.abundance[:,t-1] + next_abundance
 
+            # normalise to original population size
+            sum_abundance = np.sum(self.abundance[:, t])
+            for ind, a in enumerate(self.abundance[:,t]):
+                self.abundance[ind, t] = (a / sum_abundance) * self.population_size
+
             # remove individuals lower than threshold
             for ind, a in enumerate(self.abundance[:,t]):
-                threshold = 1 #/ self.population_size
+                threshold = 1 / (self.population_size)
                 if(a < threshold):
                     self.abundance[ind, t] = 0
 
@@ -75,9 +80,9 @@ class ReplicatorDynamics:
     def plot_stuff(self):
 
 
-        plt.title('Two Round Prisoners Evolution')
+        plt.title('Two Round Peace War Game Evolution')
         ax = plt.subplot(1, 1, 1)
-        ax.set_xlabel('Iterations')
+        ax.set_xlabel('Generations')
         ax.set_ylabel('Abundance')
         for ind, a in enumerate(self.abundance):
             ax.plot(np.linspace(1, len(np.asarray(a)[0]), len(np.asarray(a)[0])), np.asarray(a)[0], label="{0:b}".format(ind))
